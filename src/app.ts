@@ -1,0 +1,24 @@
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import { config } from "./config/env.js";
+import { errorHandler } from "./middleware/error-handler.js";
+import { notFound } from "./middleware/not-found.js";
+import { attendanceRouter } from "./routes/attendance.routes.js";
+import { branchRouter } from "./routes/branch.routes.js";
+import { companyRouter } from "./routes/company.routes.js";
+import { employeeRouter } from "./routes/employee.routes.js";
+import { healthRouter } from "./routes/health.routes.js";
+
+export const app = express();
+app.disable("x-powered-by");
+app.use(helmet());
+app.use(cors({ origin: config.corsOrigins.length ? config.corsOrigins : false }));
+app.use(express.json({ limit: "1mb" }));
+app.use("/api/health", healthRouter);
+app.use("/api/companies", companyRouter);
+app.use("/api/employees", employeeRouter);
+app.use("/api/attendance", attendanceRouter);
+app.use("/api/branches", branchRouter);
+app.use(notFound);
+app.use(errorHandler);
